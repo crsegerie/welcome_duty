@@ -9,9 +9,8 @@
 - Band Pass data
 """
 
-
-# pylint: disable=invalid-name
-
+# TODO : this file is ugly
+# %%
 import pandas as pd
 import numpy as np
 import mne
@@ -23,9 +22,10 @@ from params import (sample_data_raw_file, sample_data_raw_file_er,
                     fine_cal_file, h_freq,
                     raw_maxfiltered_file, raw_er_maxfiltered_file)
 
-# https://mne.tools/stable/auto_tutorials/intro/plot_10_overview.html#sphx-glr-auto-tutorials-intro-plot-10-overview-py
-# %%
 
+# %%
+# Import and create raw files + Visualise ########################
+##################################################################
 
 def import_raws(verbose=False, plot=False):
     ''' Import raw and raw of empty room.
@@ -44,14 +44,9 @@ def import_raws(verbose=False, plot=False):
     return raw_, raw_er_
 
 
-raw, raw_er = import_raws(verbose=True, plot=True)
-
 # %%
-# filter from 22.5s
-# ?
-
-
-# %% [markdown]
+# # BUG filter from 22.5s
+raw, raw_er = import_raws(verbose=True, plot=True)
 # interpretations :
 # 339 channels, 147000 points per record, 1000 Hz.
 # 204 GRAD, 102 MAG, 17 STIM, 2 EOG, 1 ECG, 13 MIS > what is this.
@@ -59,10 +54,9 @@ raw, raw_er = import_raws(verbose=True, plot=True)
 # ECG = cardio, mis ?
 
 
-# %% [markdown]
-# ### find_bad_channels_maxwell
-
 # %%
+# Find bad channels Automatically  ###############################
+##################################################################
 
 def find_bad_channels_maxwell_util(raw_):
     """ Inplace update of bad channels.
@@ -83,12 +77,6 @@ def find_bad_channels_maxwell_util(raw_):
     raw_.auto_scores = auto_scores
 
 
-find_bad_channels_maxwell_util(raw)
-find_bad_channels_maxwell_util(raw_er)
-
-# %%
-
-
 def union_bads():
     """ inplace update  bads of raw and raw_er
     Make the union of bads.
@@ -100,12 +88,13 @@ def union_bads():
     raw_er.info['bads'] = all_bads
 
 
+find_bad_channels_maxwell_util(raw)
+find_bad_channels_maxwell_util(raw_er)
 union_bads()
 
-# %% [markdown]
-# ### manual inspection : diagnostic figures
-
 # %%
+# Manual Inspection of bad Channels ##############################
+##################################################################
 
 
 def manual_inspection(raw_):
@@ -149,14 +138,8 @@ def manual_inspection(raw_):
     fig.tight_layout(rect=[0, 0.03, 1, 0.95])
     return fig
 
-# %% [markdown]
-# #### raw
 
-
-# %%
 manual_inspection(raw)
-
-# %% [markdown]
 # The channel 2043 seems very noisy.
 # And the channels 0933, 1212, 2023 are suspicous. Better not let pass anything.
 
@@ -176,35 +159,29 @@ raw.plot(order=picks, n_channels=len(picks))
 # from manual inspection
 raw.info['bads'] += ['MEG2043', 'MEG0933', 'MEG1212', 'MEG2023']
 
-# %% [markdown]
-# #### raw_empty_room
 
 # %%
+# Manual Inspection of bad Channels in the Empty room ############
+##################################################################
+
 manual_inspection(raw_er)
 
 # %% [markdown]
 # The channel 2043 seems very noisy.
-# And the channels 0933, 1212, 2023 are suspicous. Better not let pass anything.
+# And the channels 0933, 1212, 2023 are suspicous.
+# Better not let pass anything.
 
 # %%
 # Check of channel 0913
 picks = mne.pick_channels_regexp(raw_er.ch_names, regexp='MEG09.')
 raw_er.plot(order=picks, n_channels=len(picks))
-
-
-# %%
-# from manual inspection
 raw_er.info['bads'] += ['MEG0913']
-
-
-# %%
 union_bads()
 
-# %% [markdown]
-# ## maxwell_filter
 
 # %%
-
+# Maxwell Filter after having marked the bad channels ############
+##################################################################
 
 def maxwell_filter_utils(raw_):
     '''From the raw_ file, compute and returns maxfiltered raw_sss_ file.'''
@@ -219,63 +196,29 @@ def maxwell_filter_utils(raw_):
     raw_sss_.copy().pick(['meg']).plot(duration=2, butterfly=True)
     return raw_sss_
 
-# %% [markdown]
-# #### raw
 
-
-# %%
 raw_sss = maxwell_filter_utils(raw)
-
-# %% [markdown]
-# #### raw_er
-
-# %%
 raw_sss_er = maxwell_filter_utils(raw_er)
 
-# ## Bandpass filter
-# %% [markdown]
-# #### raw
-
 # %%
 raw.plot_psd(area_mode='range', tmax=10.0, picks=None, average=False)
-
-# %% [markdown]
 # Why frequencies = 50, 340 are dashed ?
 # Answer : The line noise frequency is
-# also indicated with a dashed line (⋮) so probably frequendcies after 340 are
-#  spotted as noise by mne and 50 was also spotted by mne.
-#
-#  Why a pair of identical plot ?
-# %% [markdown]
-# RuntimeError: By default, MNE does not load data into main memory to conserve
-# resources. inst.filter requires raw data to be loaded. Use preload=True (or string)
-# the constructor or raw.load_data().
+# also indicated with a dashed line (⋮) so probably frequencies after 340 are
+# spotted as noise by mne and 50 was also spotted by mne.
 
 # %%
+# Low freq Pass ##################################################
+##################################################################
+
 raw.load_data()
 raw.filter(l_freq=None, h_freq=h_freq)
-
-
-# %%
-raw.plot_psd(area_mode='range', tmax=10.0, picks=None, average=False)
-
-# %% [markdown]
-# #### raw_er
-
-# %%
-raw_er.plot_psd(area_mode='range', tmax=10.0, picks=None, average=False)
-
-
-# %%
 raw_er.load_data()
 raw_er.filter(l_freq=None, h_freq=h_freq)
 
-
 # %%
-raw_er.plot_psd(area_mode='range', tmax=10.0, picks=None, average=False)
-
-
-# %%
+# Savings ########################################################
+##################################################################
 
 raw.save(raw_maxfiltered_file)
 raw_er.save(raw_er_maxfiltered_file)
