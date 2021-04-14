@@ -46,7 +46,7 @@ noise_cov_er.plot(raw_er.info, proj=True)
 noise_cov_baseline.plot(ante_epochs.info, proj=True)
 noise_cov_baseline.save(noise_cov_baseline_file)
 
-# BUG: it seems the baseline covarience does not work
+# BUG: it seems the baseline covariance does not work
 # But the empty room covariance seems fine.
 
 # %%

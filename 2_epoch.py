@@ -11,7 +11,6 @@ import numpy as np
 
 from autoreject import get_rejection_threshold
 from autoreject import AutoReject
-
 import mne
 
 from params import (event_name_to_id_mapping,

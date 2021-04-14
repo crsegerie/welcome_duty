@@ -37,7 +37,7 @@ inv = mne.minimum_norm.make_inverse_operator(info=raw.info,
 
 # Compute inverse solution
 snr = 3.0
-lambda2 = 1.0 / snr ** 2  # ???
+lambda2 = 1.0 / snr ** 2  # TODO: understand this mystery
 method = "dSPM"  # use dSPM method (could also be MNE or sLORETA)
 
 stc = apply_inverse(evoked, inv, lambda2, method)
@@ -47,7 +47,7 @@ stc.crop(0.0, 0.2)
 # set True for full MRI resolution
 img = stc.as_volume(src, mri_resolution=False)
 
-# Plotting with nilearn ######################################################
+# Plotting with nilearn
 plot_stat_map(index_img(img, 61), threshold=8.,
               title='%s (t=%.1f s.)' % (method, stc.times[61]), )
 

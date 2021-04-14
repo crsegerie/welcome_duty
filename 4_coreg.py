@@ -1,7 +1,7 @@
 """ Coregistration. IN this file you should:
     - Open the gui
     - Verify the regitration.
-    - Save the registration  from the gui manually to the file data/trans
+    - Save the registration from the gui manually to the file data/trans
 
 """
 

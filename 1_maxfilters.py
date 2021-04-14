@@ -8,8 +8,6 @@
 - Plot PSD
 - Band Pass data
 """
-
-# TODO : this file is ugly
 # %%
 import pandas as pd
 import numpy as np
@@ -45,7 +43,7 @@ def import_raws(verbose=False, plot=False):
 
 
 # %%
-# # BUG filter from 22.5s
+# BUG: filter from 22.5s
 raw, raw_er = import_raws(verbose=True, plot=True)
 # interpretations :
 # 339 channels, 147000 points per record, 1000 Hz.
