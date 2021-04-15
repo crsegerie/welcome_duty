@@ -6,7 +6,7 @@ This file:
     - Saves the baseline covariance
 
 """
-
+# %%
 import mne
 
 from params import (raw_maxfiltered_file, raw_er_maxfiltered_file,
@@ -18,9 +18,8 @@ raw_er = mne.io.read_raw_fif(raw_er_maxfiltered_file)
 events = mne.find_events(raw, **FIND_EVENTS_KWARGS)
 
 
-# %% [markdown]
-# ## Compute the noise from empty room
 # %%
+# Compute the noise from empty room
 raw_er.info['bads'] = [
     bb for bb in raw.info['bads'] if 'EEG' not in bb]
 raw_er.add_proj(
@@ -45,8 +44,5 @@ noise_cov_baseline = mne.compute_covariance(ante_epochs, tmax=0)
 noise_cov_er.plot(raw_er.info, proj=True)
 noise_cov_baseline.plot(ante_epochs.info, proj=True)
 noise_cov_baseline.save(noise_cov_baseline_file)
-
-# BUG: it seems the baseline covariance does not work
-# But the empty room covariance seems fine.
 
 # %%

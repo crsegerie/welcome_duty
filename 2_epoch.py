@@ -7,6 +7,8 @@ Construct epoch from maxfiltered data:
     - Topographic map
 
 """
+# %%
+# Imports
 import numpy as np
 
 from autoreject import get_rejection_threshold
@@ -25,7 +27,7 @@ raw_er = mne.io.read_raw_fif(raw_er_maxfiltered_file)
 # Construct epochs from MEG data
 events = mne.find_events(raw, **FIND_EVENTS_KWARGS)
 epochs = mne.Epochs(raw, events, event_id=event_name_to_id_mapping,
-                    on_missing='ignore')
+                    on_missing='ignore', )
 
 for (e, i) in event_name_to_id_mapping.items():
     a = (events[:, -1] == i).sum()
@@ -47,17 +49,16 @@ print(reject)
 
 # %%
 evoked = epochs_clean['audiovis/1200Hz'].average()
-# BUG! ImportError: DLL load failed while importing _imaging:
-# Le module spécifié est introuvable
-# evoked.plot()
+evoked.plot()
 
 # %%
-epochs_clean.save(epochs_file)
+epochs_clean.save(epochs_file, overwrite=True)
 evoked.save(evoked_file)
 
 
 # %% [markdown]
-# ### When does the signal peaks? Does the topographies look dipolar at the peak
+# ### When does the signal peaks? Does the topographies look dipolar
+# at the peak
 # latencies?
 #
 # - peak at 0.13s, which seems appropriate.
@@ -72,4 +73,4 @@ fig = evoked.plot_topomap(times, ch_type='grad', average=0.05, time_unit='s')
 
 # %% [markdown]
 # Does the topographies look dipolar at the peak latencies?
-# > The main response seems symetric
+# > Yes

@@ -98,7 +98,7 @@ event_name_to_id_mapping = {
     'vis/checker': 9,
     'button': 99}
 
-AUTOREJECT = False
+AUTOREJECT = False  # Warning : this takes a lot of RAM and lot of time...
 
 FIND_EVENTS_KWARGS = {
     "min_duration": 0.001,

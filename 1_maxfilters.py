@@ -43,13 +43,23 @@ def import_raws(verbose=False, plot=False):
 
 
 # %%
-# BUG: filter from 22.5s
 raw, raw_er = import_raws(verbose=True, plot=True)
 # interpretations :
 # 339 channels, 147000 points per record, 1000 Hz.
 # 204 GRAD, 102 MAG, 17 STIM, 2 EOG, 1 ECG, 13 MIS > what is this.
 # Answer : Gradi = gradiometers, MAG = MEG , STIM = event, EOG = ocular,
 # ECG = cardio, mis ?
+
+
+# %%
+# Low freq Pass ##################################################
+##################################################################
+
+raw.load_data()
+raw.filter(l_freq=None, h_freq=h_freq)
+raw_er.load_data()
+raw_er.filter(l_freq=None, h_freq=h_freq)
+raw.plot()
 
 
 # %%
@@ -76,7 +86,7 @@ def find_bad_channels_maxwell_util(raw_):
 
 
 def union_bads():
-    """ inplace update  bads of raw and raw_er
+    """ inplace update bads of raw and raw_er
     Make the union of bads.
     """
     print(set(raw.info['bads']), set(raw_er.info['bads']))
@@ -205,20 +215,10 @@ raw.plot_psd(area_mode='range', tmax=10.0, picks=None, average=False)
 # also indicated with a dashed line (⋮) so probably frequencies after 340 are
 # spotted as noise by mne and 50 was also spotted by mne.
 
-# %%
-# Low freq Pass ##################################################
-##################################################################
-
-raw.load_data()
-raw.filter(l_freq=None, h_freq=h_freq)
-raw_er.load_data()
-raw_er.filter(l_freq=None, h_freq=h_freq)
 
 # %%
 # Savings ########################################################
 ##################################################################
 
-raw.save(raw_maxfiltered_file)
-raw_er.save(raw_er_maxfiltered_file)
-
-# %%
+raw.save(raw_maxfiltered_file, overwrite=True)
+raw_er.save(raw_er_maxfiltered_file, overwrite=True)
