@@ -5,7 +5,7 @@ ICA to remove eye-blinks and cardiac artifacts
 from mne.preprocessing import (ICA, create_eog_epochs, create_ecg_epochs)
 import mne
 from params import (raw_maxfiltered_file, sample_data_raw_file,
-                    h_freq, FIND_EVENTS_KWARGS, event_name_to_id_mapping)
+                    h_freq, FIND_EVENTS_KWARGS, event_id)
 
 
 raw = mne.io.read_raw_fif(raw_maxfiltered_file)
@@ -48,12 +48,13 @@ ecg_evoked.plot_joint()
 raw_base = mne.io.read_raw_fif(sample_data_raw_file, preload=True)
 raw_base.filter(l_freq=1, h_freq=h_freq)
 events = mne.find_events(raw_base, **FIND_EVENTS_KWARGS)
-epochs = mne.Epochs(raw_base, events, event_id=event_name_to_id_mapping,
+epochs = mne.Epochs(raw_base, events, event_id=event_id,
                     on_missing='ignore')
 
 epochs = epochs.copy()
 ica = ICA(n_components=15, random_state=1)
 ica.fit(epochs)
+# BUG: that's not really cardiac artifacts.
 
 
 # %%

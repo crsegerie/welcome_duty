@@ -15,7 +15,7 @@ from autoreject import get_rejection_threshold
 from autoreject import AutoReject
 import mne
 
-from params import (event_name_to_id_mapping,
+from params import (event_id,
                     raw_maxfiltered_file, raw_er_maxfiltered_file,
                     epochs_file, evoked_file, AUTOREJECT,
                     FIND_EVENTS_KWARGS)
@@ -23,13 +23,19 @@ from params import (event_name_to_id_mapping,
 raw = mne.io.read_raw_fif(raw_maxfiltered_file)
 raw_er = mne.io.read_raw_fif(raw_er_maxfiltered_file)
 
+
 # %%
 # Construct epochs from MEG data
 events = mne.find_events(raw, **FIND_EVENTS_KWARGS)
-epochs = mne.Epochs(raw, events, event_id=event_name_to_id_mapping,
+epochs = mne.Epochs(raw, events, event_id=event_id,
                     on_missing='ignore', )
 
-for (e, i) in event_name_to_id_mapping.items():
+fig = mne.viz.plot_events(events, sfreq=raw.info['sfreq'],
+                          first_samp=raw.first_samp, event_id=event_id,
+                          on_missing='ignore',)
+fig.subplots_adjust(right=0.7)  # make room for legend
+
+for (e, i) in event_id.items():
     a = (events[:, -1] == i).sum()
     print(f"event {e} is present {a} times")
 

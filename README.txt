@@ -1,3 +1,5 @@
+Author: Charbel-Raphael Segerie <charbel-raphael.segerie@inria.fr>
+
 Tasks:
 
 maxfilter.py:

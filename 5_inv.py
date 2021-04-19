@@ -18,12 +18,12 @@ evoked = mne.read_evokeds(evoked_file)[0]
 # %% Forward problem
 
 src = mne.setup_source_space(subject, spacing='oct5',  # oct6
-                             add_dist=False, subjects_dir=subjects_dir)  # subjects_dir ?
+                             add_dist=False, subjects_dir=subjects_dir, )  # subjects_dir ?
 
 bem = mne.make_bem_model(subject, ico=4,
                          subjects_dir=subjects_dir, verbose=None)
 
-bem_sol = mne.make_bem_solution(surfs=bem, verbose=None,)
+bem_sol = mne.make_bem_solution(surfs=bem, verbose=None, )
 
 fwd = mne.make_forward_solution(info=raw.info, trans=trans_dir,
                                 src=src, bem=bem_sol,
@@ -45,3 +45,8 @@ method = "dSPM"  # use dSPM method (could also be MNE or sLORETA)
 
 stc = apply_inverse(evoked, inv, lambda2, method)
 stc.crop(0.0, 0.2)
+
+
+# brain = stc.plot(subjects_dir=subjects_dir, initial_time=0.1, )
+
+# %%

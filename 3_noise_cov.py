@@ -30,7 +30,7 @@ noise_cov_er = mne.compute_raw_covariance(
 
 # %%
 # We also use the pre-stimulus baseline to estimate the noise covariance
-# epochs = mne.Epochs(raw, events, event_id=event_name_to_id_mapping,
+# epochs = mne.Epochs(raw, events, event_id=event_id,
 #                         on_missing='ignore')
 
 ante_epochs = mne.Epochs(raw, events, event_id=1, tmin=-0.2, tmax=0.5,

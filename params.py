@@ -76,7 +76,8 @@ bem_dir = os.path.join("data",
                        "freesurfer",
                        subject,
                        "bem",
-                       subject+"-meg-bem.fif")  # or maybe "-head.fif"
+                       subject+"-meg-bem.fif")
+
 
 # Params  ########################################################
 ##################################################################
@@ -86,7 +87,7 @@ h_freq = 40
 # Event  #########################################################
 ##################################################################
 
-event_name_to_id_mapping = {
+event_id = {
     'audiovis/300Hz': 1,
     'audiovis/600Hz': 2,
     'audiovis/1200Hz': 3,
