@@ -12,6 +12,7 @@ raw = mne.io.read_raw_fif(raw_maxfiltered_file)
 
 ##############################################################################
 # Visualisation of the artifacts ()
+# In this part, we manipulate the raw object to identify eog and ecg
 # ----------------------
 
 
@@ -40,15 +41,14 @@ ecg_evoked.plot_joint()
 
 ##############################################################################
 # Isolation of the artifacts with ICA
-# raw_base > 1hz > new epochs > ICA
+# raw > 1hz > new epochs > ICA
 # and not epoch > 1hz > ICA to avoid artifacts.
 # ----------------------
 
 # %%
-raw_base = mne.io.read_raw_fif(sample_data_raw_file, preload=True)
-raw_base.filter(l_freq=1, h_freq=h_freq)
-events = mne.find_events(raw_base, **FIND_EVENTS_KWARGS)
-epochs = mne.Epochs(raw_base, events, event_id=event_id,
+raw.filter(l_freq=1, h_freq=h_freq)
+events = mne.find_events(raw, **FIND_EVENTS_KWARGS)
+epochs = mne.Epochs(raw, events, event_id=event_id,
                     on_missing='ignore')
 
 epochs = epochs.copy()
@@ -58,29 +58,31 @@ ica.fit(epochs)
 
 
 # %%
+raw.load_data()
+ica.plot_sources(raw, show_scrollbars=False)
 ica.plot_components()
 
 # %%
 # blinks
-ica.plot_overlay(raw_base, exclude=[0], picks='mag')
+ica.plot_overlay(raw, exclude=[0], picks='mag')
 # heartbeats
-ica.plot_overlay(raw_base, exclude=[1], picks='mag')
+ica.plot_overlay(raw, exclude=[3, 5], picks='mag')
 
 # %%
-ica.plot_properties(raw_base, picks=[0, 1])
+ica.plot_properties(raw, picks=[0, 1])
 
 
 # %%
 ##############################################################################
-# Selecting ICA components manually¶
+# Selecting ICA components manually
 # Once we’re certain which components we want to exclude,
 # We can specify that manually by setting the ica.exclude
 # ----------------------
 
-ica.exclude = [0, 1]  # indices chosen based on various plots above
-reconst_raw = raw_base.copy()
+ica.exclude = [0, 3, 5]  # indices chosen based on various plots above
+reconst_raw = raw.copy()
 ica.apply(reconst_raw)
 
-raw_base.plot(order=artifact_picks, n_channels=len(artifact_picks))
+raw.plot(order=artifact_picks, n_channels=len(artifact_picks))
 reconst_raw.plot(order=artifact_picks, n_channels=len(artifact_picks))
 # %%

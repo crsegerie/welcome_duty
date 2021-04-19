@@ -11,8 +11,8 @@ Parameters :
 
 import os
 
-subject = 'CC110033'
-# subject = 'CC110037'
+# subject = 'CC110033'
+subject = 'CC110037'
 
 sample_data_raw_file = os.path.join("data",
                                     subject,
@@ -69,7 +69,7 @@ subjects_dir = os.path.join("data",
 
 trans_dir = os.path.join("data",
                          "trans",
-                         "sub-" + subject + "-trans.fif")
+                         subject + "-trans.fif")
 
 # Forward and Inverse
 bem_dir = os.path.join("data",
